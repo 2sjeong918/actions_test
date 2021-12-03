@@ -1,20 +1,15 @@
-# develop에서 main으로 pr머지했을 때
-# lint 검사
-# lint 통과 시, 빌드
-# 빌드 완료 시, aws에 배포
-
 name: my workflow
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
-    types: [closed]
+  # pull_request:
+  #   branches: [main]
+  #   types: [closed]
 
 jobs:
   merge_job:
     # this job will only run if the PR has been merged
-    if: github.event.pull_request.merged == true
+    # if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
