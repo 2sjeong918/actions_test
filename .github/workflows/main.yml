@@ -1,0 +1,47 @@
+# develop에서 main으로 pr머지했을 때
+# lint 검사
+# lint 통과 시, 빌드
+# 빌드 완료 시, aws에 배포
+
+name: my workflow
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    types: [closed]
+
+jobs:
+  merge_job:
+    # this job will only run if the PR has been merged
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - uses: actions/cache@v1
+        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+          ${{ runner.os }}-yarn-
+
+      # Node 16.x를 사용합니다.
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: "16.x"
+
+      # 모듈을 설치합니다.
+      - name: Install packages
+        run: rm -rf node_modules && yarn install --frozen-lockfile
+
+      # 린트 체크
+      - name: Lint
+        run: yarn lint
