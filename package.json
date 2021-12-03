@@ -26,8 +26,7 @@
     "build": "craco build",
     "test": "react-scripts test",
     "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public",
-    "commit": "cz"
+    "build-storybook": "build-storybook -s public"
   },
   "eslintConfig": {
     "extends": [
